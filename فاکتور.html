@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فاکتور فروش</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f5f5;
+        }
+        
+        /* کادر خارجی اصلی */
+        .main-container {
+            border: 3px solid #2c3e50;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 90%;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        
+        /* کادر داخلی فاکتور */
+        .invoice-container {
+            width: 100%;
+            max-width: 595px;
+            margin: auto;
+            border: 2px solid #7f8c8d;
+            padding: 20px;
+            position: relative;
+            padding-bottom: 40px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #bdc3c7;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .logo img {
+            width: 150px;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background: white;
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .invoice-number-container {
+            text-align: center;
+            margin: 5px 0 15px 0;
+        }
+        
+        .invoice-number-label {
+            font-weight: bold;
+            margin-left: 5px;
+            color: #2c3e50;
+        }
+        
+        .invoice-number {
+            color: red;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .table-container {
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        table, th, td {
+            border: 1px solid #95a5a6;
+            padding: 8px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        th {
+            background-color: #ecf0f1;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4em;
+            border-top: 2px solid #bdc3c7;
+            padding-top: 20px;
+        }
+        
+        .signature {
+            text-align: center;
+            margin-top: 10px;
+            width: 45%;
+            border: 1px dashed #7f8c8d;
+            padding: 10px;
+        }
+        
+        .phone-container {
+            border: 1px solid #bdc3c7;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 4em;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .description-container {
+            margin-top: 20px;
+            border-top: 2px solid #bdc3c7;
+            padding-top: 10px;
+            text-align: right;
+        }
+        
+        .description-title {
+            display: inline-block;
+            font-weight: bold;
+            margin-left: 10px;
+            color: #2c3e50;
+        }
+        
+        .description-text {
+            display: inline-block;
+            margin-left: 10px;
+            color: #555;
+        }
+        
+        .size-controls {
+            margin: 10px 0;
+            text-align: center;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+        }
+        
+        .size-controls label {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        
+        .size-controls input {
+            padding: 5px;
+            width: 80px;
+            text-align: center;
+        }
+        
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        #printButton {
+            background-color: #27ae60;
+        }
+        
+        #printButton:hover {
+            background-color: #219653;
+        }
+        
+        #pdfButton {
+            background-color: #e74c3c;
+        }
+        
+        #pdfButton:hover {
+            background-color: #c0392b;
+        }
+        
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #bdc3c7;
+            margin: 5px;
+        }
+        
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+                background: none;
+                width: 210mm;
+                height: 297mm;
+            }
+            
+            .main-container {
+                border: 3px solid #000 !important;
+                padding: 15px !important;
+                width: 190mm !important;
+                height: 277mm !important;
+                box-shadow: none !important;
+                margin: 0 auto !important;
+                page-break-after: always;
+            }
+            
+            .invoice-container {
+                border: 2px solid #000 !important;
+                padding: 20px !important;
+                width: 100% !important;
+                height: auto !important;
+                page-break-inside: avoid;
+                margin: 0 auto !important;
+            }
+            
+            .header, .table-container, .footer {
+                margin: 0;
+                padding: 0;
+            }
+            
+            table {
+                font-size: 10px;
+                page-break-inside: avoid;
+                width: 100% !important;
+            }
+            
+            .logo img {
+                width: var(--logo-print-size, 100px);
+                height: auto;
+            }
+            
+            .title {
+                font-size: 18px;
+            }
+            
+            .invoice-number {
+                color: red !important;
+            }
+            
+            .phone-container {
+                margin-top: 4em;
+                border: none;
+                background-color: transparent;
+            }
+            
+            .footer {
+                margin-bottom: 4em;
+                position: absolute;
+                bottom: 20px;
+                width: calc(100% - 40px);
+            }
+            
+            #logoUpload, #printButton, #pdfButton, #logoSize, label[for="logoSize"],
+            #descriptionButton, #addTextButton, #buyerTextContainer, #pageSizeSelector,
+            #editButton, #addProductButton, #removeProductButton, #removeLogoButton,
+            .size-controls {
+                display: none;
+            }
+        }
+    </style>
+    <!-- کتابخانه jsPDF برای تولید PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="size-controls">
+        <label for="containerWidth">عرض کادر (پیکسل):</label>
+        <input type="number" id="containerWidth" min="300" max="1200" value="800">
+        <label for="containerHeight">ارتفاع کادر (پیکسل):</label>
+        <input type="number" id="containerHeight" min="300" max="1200" value="600">
+    </div>
+
+    <div class="main-container" id="mainContainer">
+        <div class="invoice-container" id="invoiceContainer">
+            <div class="header">
+                <div class="">
+                    <img src="OrgLogo.png" alt="لوگو" id="logoImage">
+                    <input type="file" id="logoUpload" accept="image/*" style="margin-top: 10px;">
+                    <br>
+                    <label for="logoSize">اندازه لوگو در چاپ (پیکسل):</label>
+                    <input type="number" id="logoSize" min="50" max="300" value="100" style="margin-top: 10px;">
+                </div>
+                <div>
+                    <div class="title">فاکتور فروش</div>
+                    <div class="invoice-number-container">
+                        <span class="invoice-number-label">شماره فاکتور:</span>
+                        <span class="invoice-number" id="invoiceNumber"></span>
+                    </div>
+                </div>
+                <div class="date">تاریخ: <span id="invoiceDate"></span></div>
+            </div>
+            
+            <div class="table-container">
+                <table id="invoiceTable">
+                    <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>محصول</th>
+                            <th>قیمت</th>
+                            <th>تعداد</th>
+                            <th>تخفیف</th>
+                            <th>قیمت کل</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <h3>جمع کل: <span id="totalPrice">۰</span> ریال</h3>
+            </div>
+
+            <button id="descriptionButton" onclick="addDescription()">افزودن توضیحات</button>
+
+            <div class="description-container" id="descriptionContainer" style="display: none;">
+                <h3 class="description-title">توضیحات:</h3>
+                <span id="invoiceDescription" class="description-text">هیچ توضیحی وارد نشده است.</span>
+            </div>
+            
+            <div class="footer">
+                <div class="signature">
+                    امضاء خریدار
+                    <span id="buyerTextDisplay" style="margin-right: 5px;"></span>
+                    <button id="addTextButton" onclick="addBuyerText()" style="margin-left: 10px;">افزودن نوشته</button>
+                    <div id="buyerTextContainer" style="margin-top: 10px; display: none;">
+                        <input type="text" id="buyerText" placeholder="متن خود را وارد کنید" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+                <div class="signature">امضاء فروشنده</div>
+            </div>
+
+            <select id="pageSizeSelector">
+                <option value="A4">A4</option>
+                <option value="A5">A5</option>
+                <option value="A6">A6</option>
+            </select>
+
+            <button id="editButton" onclick="editInvoice()">ویرایش فاکتور</button>
+            <button id="addProductButton" onclick="addProduct()">اضافه کردن محصول</button>
+            <button id="removeProductButton" onclick="removeProduct()">حذف محصول</button>
+            <button id="printButton" onclick="printInvoice()">چاپ فاکتور</button>
+            <button id="pdfButton" onclick="generatePDF()">ذخیره PDF</button>
+
+            <div class="phone-container">
+                <p>تلفن: <span id="phoneNumber"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تبدیل اعداد فارسی به انگلیسی
+        function toEnglishNumber(number) {
+            const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+            return number.toString().replace(/[۰-۹]/g, (d) => persianDigits.indexOf(d));
+        }
+
+        // تبدیل اعداد انگلیسی به فارسی
+        function toPersianNumber(number) {
+            const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+            return number.toString().replace(/\d/g, (d) => persianDigits[d]);
+        }
+
+        // تبدیل مقدار کمیت به عدد
+        function convertQuantityToNumber(quantity) {
+            const numberWords = {
+                "یک": 1, "دو": 2, "سه": 3, "چهار": 4, "پنج": 5,
+                "شش": 6, "هفت": 7, "هشت": 8, "نه": 9, "ده": 10
+            };
+            return numberWords[quantity] || parseInt(quantity) || 0;
+        }
+
+        // فرمت کردن اعداد با جداکننده هزارگان
+        function formatPrice(price) {
+            // تبدیل به عدد انگلیسی در صورت نیاز
+            const englishPrice = toEnglishNumber(price.toString());
+            // تبدیل به عدد
+            const num = parseFloat(englishPrice);
+            // فرمت کردن با جداکننده هزارگان
+            return num.toLocaleString('en-US').replace(/,/g, ',');
+        }
+
+        // محاسبه قیمت نهایی با در نظر گرفتن تخفیف
+        function calculateFinalPrice(price, quantity, discount) {
+            const discountAmount = (price * discount) / 100;
+            return (price - discountAmount) * convertQuantityToNumber(quantity);
+        }
+
+        // به‌روزرسانی جمع کل فاکتور
+        function updateTotalPrice() {
+            const rows = document.querySelectorAll("#invoiceTable tbody tr");
+            let total = 0;
+
+            rows.forEach(row => {
+                const priceText = row.cells[5].textContent.replace(/,/g, '');
+                const price = parseFloat(toEnglishNumber(priceText));
+                if (!isNaN(price)) total += price;
+            });
+
+            document.getElementById("totalPrice").textContent = toPersianNumber(formatPrice(total));
+        }
+
+        // افزودن محصول به جدول
+        function addProductToTable(name, price, quantity, discount, rowIndex) {
+            const tableBody = document.getElementById("invoiceTable").getElementsByTagName('tbody')[0];
+            const finalPrice = calculateFinalPrice(price, quantity, discount);
+
+            const row = tableBody.insertRow();
+            row.insertCell(0).textContent = toPersianNumber(rowIndex);
+            row.insertCell(1).textContent = name;
+            row.insertCell(2).textContent = toPersianNumber(formatPrice(price));
+            row.insertCell(3).textContent = toPersianNumber(quantity);
+            row.insertCell(4).textContent = toPersianNumber(discount + "%");
+            row.insertCell(5).textContent = toPersianNumber(formatPrice(finalPrice));
+
+            updateTotalPrice();
+        }
+
+        // دریافت اطلاعات از کاربر و افزودن محصول
+        function addProduct() {
+            try {
+                const name = prompt("نام محصول را وارد کنید:");
+                if (!name) throw new Error("نام محصول الزامی است");
+                
+                let price = prompt("قیمت محصول را وارد کنید (ریال):");
+                if (!price) throw new Error("قیمت محصول الزامی است");
+                
+                // حذف جداکننده‌های احتمالی از قیمت وارد شده
+                price = price.replace(/,/g, '');
+                price = parseFloat(price);
+                if (isNaN(price)) throw new Error("قیمت باید عددی باشد");
+                
+                const quantity = prompt("تعداد محصول را وارد کنید (عدد یا حروف):");
+                if (!quantity) throw new Error("تعداد محصول الزامی است");
+                
+                let discount = prompt("تخفیف محصول را وارد کنید (درصد):") || "0";
+                discount = parseFloat(discount);
+                if (isNaN(discount)) throw new Error("تخفیف باید عددی باشد");
+
+                const rowIndex = document.querySelectorAll("#invoiceTable tbody tr").length + 1;
+                addProductToTable(name, price, quantity, discount, rowIndex);
+            } catch (error) {
+                alert("خطا: " + error.message);
+            }
+        }
+
+        // ویرایش محصول موجود
+        function editInvoice() {
+            try {
+                const rowNumber = prompt("شماره ردیف مورد نظر برای ویرایش را وارد کنید:");
+                const row = document.querySelector(`#invoiceTable tbody tr:nth-child(${rowNumber})`);
+                if (!row) throw new Error("ردیف مورد نظر یافت نشد!");
+
+                const cells = row.cells;
+                const name = prompt("نام محصول را ویرایش کنید:", cells[1].textContent);
+                if (!name) throw new Error("نام محصول الزامی است");
+                
+                let price = prompt("قیمت محصول را ویرایش کنید (ریال):", 
+                                toEnglishNumber(cells[2].textContent.replace(/,/g, '')));
+                if (!price) throw new Error("قیمت محصول الزامی است");
+                price = price.replace(/,/g, '');
+                price = parseFloat(price);
+                if (isNaN(price)) throw new Error("قیمت باید عددی باشد");
+                
+                const quantity = prompt("تعداد محصول را ویرایش کنید (عدد یا حروف):", cells[3].textContent);
+                if (!quantity) throw new Error("تعداد محصول الزامی است");
+                
+                let discount = prompt("تخفیف محصول را ویرایش کنید (درصد):", 
+                                    toEnglishNumber(cells[4].textContent.replace("%", ""))) || "0";
+                discount = parseFloat(discount);
+                if (isNaN(discount)) throw new Error("تخفیف باید عددی باشد");
+
+                const finalPrice = calculateFinalPrice(price, quantity, discount);
+                cells[1].textContent = name;
+                cells[2].textContent = toPersianNumber(formatPrice(price));
+                cells[3].textContent = toPersianNumber(quantity);
+                cells[4].textContent = toPersianNumber(discount + "%");
+                cells[5].textContent = toPersianNumber(formatPrice(finalPrice));
+                updateTotalPrice();
+            } catch (error) {
+                alert("خطا: " + error.message);
+            }
+        }
+
+        // حذف محصول
+        function removeProduct() {
+            try {
+                const rowNumber = prompt("شماره ردیف مورد نظر برای حذف را وارد کنید:");
+                const row = document.querySelector(`#invoiceTable tbody tr:nth-child(${rowNumber})`);
+                if (!row) throw new Error("ردیف مورد نظر یافت نشد!");
+                
+                if (confirm(`آیا از حذف ردیف ${rowNumber} مطمئن هستید؟`)) {
+                    row.remove();
+                    // به روز رسانی شماره ردیف‌ها
+                    const rows = document.querySelectorAll("#invoiceTable tbody tr");
+                    rows.forEach((row, index) => {
+                        row.cells[0].textContent = toPersianNumber(index + 1);
+                    });
+                    updateTotalPrice();
+                }
+            } catch (error) {
+                alert("خطا: " + error.message);
+            }
+        }
+
+        // افزودن توضیحات
+        function addDescription() {
+            const description = prompt("لطفاً توضیحات را وارد کنید:");
+            document.getElementById("invoiceDescription").textContent = description || "هیچ توضیحی وارد نشده است.";
+            document.getElementById("descriptionContainer").style.display = "block";
+        }
+
+        // افزودن نوشته برای امضای خریدار
+        function addBuyerText() {
+            const buyerTextContainer = document.getElementById("buyerTextContainer");
+            const buyerTextDisplay = document.getElementById("buyerTextDisplay");
+
+            buyerTextContainer.style.display = "block";
+            buyerTextContainer.querySelector("input").focus();
+
+            buyerTextContainer.querySelector("input").addEventListener("blur", function () {
+                const text = buyerTextContainer.querySelector("input").value;
+                if (text) {
+                    buyerTextDisplay.textContent = `: ${text}`;
+                }
+                buyerTextContainer.style.display = "none";
+            });
+        }
+
+        // چاپ فاکتور
+        function printInvoice() {
+            const pageSize = document.getElementById("pageSizeSelector").value;
+            const style = document.createElement('style');
+            style.innerHTML = `@page { size: ${pageSize}; margin: 0; }`;
+            document.head.appendChild(style);
+            window.print();
+            document.head.removeChild(style);
+        }
+
+        // تولید PDF از فاکتور
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            
+        }
+
+        // تنظیم اندازه کادر خارجی
+        function updateContainerSize() {
+            const width = document.getElementById("containerWidth").value;
+            const height = document.getElementById("containerHeight").value;
+            const mainContainer = document.getElementById("mainContainer");
+            
+            mainContainer.style.width = `${width}px`;
+            mainContainer.style.height = `${height}px`;
+        }
+
+        // ذخیره فاکتور در localStorage
+        function saveInvoice() {
+            const invoiceData = {
+                date: document.getElementById("invoiceDate").textContent,
+                number: document.getElementById("invoiceNumber").textContent,
+                phone: document.getElementById("phoneNumber").textContent,
+                description: document.getElementById("invoiceDescription").textContent,
+                buyerText: document.getElementById("buyerTextDisplay").textContent,
+                items: []
+            };
+
+            const rows = document.querySelectorAll("#invoiceTable tbody tr");
+            rows.forEach(row => {
+                invoiceData.items.push({
+                    name: row.cells[1].textContent,
+                    price: toEnglishNumber(row.cells[2].textContent.replace(/,/g, '')),
+                    quantity: row.cells[3].textContent,
+                    discount: toEnglishNumber(row.cells[4].textContent.replace("%", "")),
+                    total: toEnglishNumber(row.cells[5].textContent.replace(/,/g, ''))
+                });
+            });
+
+            localStorage.setItem('lastInvoice', JSON.stringify(invoiceData));
+            alert("فاکتور با موفقیت ذخیره شد!");
+        }
+
+        // بارگذاری فاکتور از localStorage
+        function loadInvoice() {
+            const savedInvoice = localStorage.getItem('lastInvoice');
+            if (!savedInvoice) {
+                alert("فاکتور ذخیره شده ای یافت نشد!");
+                return;
+            }
+
+            const invoiceData = JSON.parse(savedInvoice);
+            
+            document.getElementById("invoiceDate").textContent = invoiceData.date;
+            document.getElementById("invoiceNumber").textContent = invoiceData.number;
+            document.getElementById("phoneNumber").textContent = invoiceData.phone;
+            document.getElementById("invoiceDescription").textContent = invoiceData.description;
+            document.getElementById("descriptionContainer").style.display = "block";
+            document.getElementById("buyerTextDisplay").textContent = invoiceData.buyerText;
+
+            const tableBody = document.getElementById("invoiceTable").getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = "";
+
+            invoiceData.items.forEach((item, index) => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = toPersianNumber(index + 1);
+                row.insertCell(1).textContent = item.name;
+                row.insertCell(2).textContent = toPersianNumber(formatPrice(item.price));
+                row.insertCell(3).textContent = toPersianNumber(item.quantity);
+                row.insertCell(4).textContent = toPersianNumber(item.discount + "%");
+                row.insertCell(5).textContent = toPersianNumber(formatPrice(item.total));
+            });
+
+            updateTotalPrice();
+            alert("فاکتور با موفقیت بارگذاری شد!");
+        }
+
+        // اجرای اولیه
+        window.onload = () => {
+            // بارگذاری آخرین فاکتور ذخیره شده
+            if (confirm("آیا مایل به بارگذاری آخرین فاکتور ذخیره شده هستید؟")) {
+                loadInvoice();
+                return;
+            }
+
+            // ایجاد فاکتور جدید
+            const date = prompt("لطفاً تاریخ فاکتور را وارد کنید (مثال: ۱۴۰۲/۰۷/۱۵):", new Date().toLocaleDateString('fa-IR'));
+            if (!date) return;
+            document.getElementById("invoiceDate").textContent = toPersianNumber(date);
+
+            let invoiceNumber;
+            while (true) {
+                invoiceNumber = prompt("لطفاً شماره فاکتور را وارد کنید (بین 1 تا 10 رقم):", Math.floor(Math.random() * 1000) + 1);
+                if (!invoiceNumber) return;
+                if (/^\d{1,10}$/.test(toEnglishNumber(invoiceNumber))) break;
+                alert("شماره فاکتور باید بین 1 تا 10 رقم باشد!");
+            }
+            document.getElementById("invoiceNumber").textContent = toPersianNumber(invoiceNumber);
+
+            const phone = prompt("لطفاً شماره تلفن را وارد کنید:", );
+            if (!phone) return;
+            document.getElementById("phoneNumber").textContent = toPersianNumber(phone);
+
+            // افزودن رویداد برای آپلود لوگو
+            document.getElementById("logoUpload").addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById("logoImage").src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // تنظیم اندازه لوگو برای چاپ
+            document.getElementById("logoSize").addEventListener("input", function () {
+                document.documentElement.style.setProperty("--logo-print-size", this.value + "px");
+            });
+
+            // تنظیم اندازه کادر خارجی
+            document.getElementById("containerWidth").addEventListener("input", updateContainerSize);
+            document.getElementById("containerHeight").addEventListener("input", updateContainerSize);
+
+            // افزودن محصولات
+            while (true) {
+                addProduct();
+                if (!confirm("آیا می‌خواهید محصول دیگری اضافه کنید؟")) break;
+            }
+
+            // ذخیره خودکار فاکتور
+            saveInvoice();
+        };
+    </script>
+</body>
+</html>
